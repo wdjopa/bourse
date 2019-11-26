@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>API</title>
+</head>
+
+<body>
+    <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <div class="tradingview-widget-copyright"><a href="https://fr.tradingview.com" rel="noopener"
+                target="_blank"><span class="blue-text">Données du marché</span></a> par TradingView</div>
+        <iframe frameBorder='0' scrolling='no' width='800' height='420'
+            src='https://api.stockdio.com/visualization/financial/charts/v1/HistoricalPrices?symbol=AAPL&dividends=true&splits=true&palette=Financial-Light'></iframe>
+        <div id="chart_div"></div>
+
+        <div id="snapshot-div">
+            <h2>snapshot</h2>
+            <div id="snapshot"></div>
+        </div>
+        <div>
+            <h2>quotes</h2>
+            <div id="quotes"></div>
+        </div>
+        <!-- TradingView Widget BEGIN -->
+
+        <script type="text/javascript"
+            src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                {
+                    "colorTheme": "light",
+                    "dateRange": "12m",
+                    "showChart": true,
+                    "locale": "fr",
+                    "largeChartUrl": "",
+                    "isTransparent": false,
+                    "width": "400",
+                    "height": "660",
+                "plotLineColorGrowing": "rgba(33, 150, 243, 1)",
+                    "plotLineColorFalling": "rgba(33, 150, 243, 1)",
+                    "gridLineColor": "rgba(233, 233, 234, 1)",
+                "scaleFontColor": "rgba(120, 123, 134, 1)",
+                    "belowLineFillColorGrowing": "rgba(33, 150, 243, 0.12)",
+                    "belowLineFillColorFalling": "rgba(33, 150, 243, 0.12)",
+                    "symbolActiveColor": "rgba(33, 150, 243, 0.12)",
+                    "tabs": [
+                    {
+                    "title": "Indices",
+                    "symbols": [
+                        {
+                            "s": "OANDA:SPX500USD",
+                            "d": "S&P 500"
+                        },
+                        {
+                            "s": "AAPL",
+                            "d": "AAPL 500"
+                        },
+                        {
+                            "s": "OANDA:NAS100USD",
+                            "d": "Nasdaq 100"
+                        },
+                        {
+                            "s": "FOREXCOM:DJI",
+                            "d": "Dow 30"
+                        },
+                        {
+                            "s": "INDEX:NKY",
+                            "d": "Nikkei 225"
+                        },
+                        {
+                            "s": "INDEX:DEU30",
+                            "d": "DAX Index"
+                        },
+                        {
+                            "s": "OANDA:UK100GBP",
+                            "d": "FTSE 100"
+                        }
+                    ],
+                    "originalTitle": "Indices"
+                }
+            ]
+                }
+            </script>
+    </div>
+    <!-- TradingView Widget END -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { packages: ['corechart', 'line'] });
+        google.charts.setOnLoadCallback(drawBasic);
+
+        function drawBasic() {
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('number', 'X');
+            data.addColumn('number', 'Dogs');
+
+            data.addRows([
+                [0, 0], [1, 10], [2, 23], [3, 17], [4, 18], [5, 9],
+                [6, 11], [7, 27], [8, 33], [9, 40], [10, 32], [11, 35],
+                [12, 30], [13, 40], [14, 42], [15, 47], [16, 44], [17, 48],
+                [18, 52], [19, 54], [20, 42], [21, 55], [22, 56], [23, 57],
+                [24, 60], [25, 50], [26, 52], [27, 51], [28, 49], [29, 53],
+                [30, 55], [31, 60], [32, 61], [33, 59], [34, 62], [35, 65],
+                [36, 62], [37, 58], [38, 55], [39, 61], [40, 64], [41, 65],
+                [42, 63], [43, 66], [44, 67], [45, 69], [46, 69], [47, 70],
+                [48, 72], [49, 68], [50, 66], [51, 65], [52, 67], [53, 70],
+                [54, 71], [55, 72], [56, 73], [57, 75], [58, 70], [59, 68],
+                [60, 64], [61, 60], [62, 65], [63, 67], [64, 68], [65, 69],
+                [66, 70], [67, 72], [68, 75], [69, 80]
+            ]);
+
+            var options = {
+                hAxis: {
+                    title: 'Time'
+                },
+                vAxis: {
+                    title: 'Popularity'
+                }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+            chart.draw(data, options);
+        }
+    </script>
+
+    <script>
+        var socket = io.connect("/");
+        socket.on("datas", function (quotes, symbol) {
+
+            console.log(quotes)
+            console.log(symbol)
+            document.querySelector("div#quotes").innerHTML += JSON.stringify(quotes)
+        })
+        socket.on("stocks", function (prices) {
+
+            console.log(prices)
+            // document.querySelector("div#quotes").innerHTML += JSON.stringify(quotes)
+        })
+        socket.on("stock", function (prix) {
+            console.log(prix)
+            document.querySelector("div#snapshot").innerHTML = JSON.stringify(prix) + "€"
+        })
+    </script>
+</body>
+
+</html>
