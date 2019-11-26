@@ -1,0 +1,29 @@
+{
+  "name": "ifbourse",
+  "version": "1.0.0",
+  "description": "projet de bourse",
+  "main": "index.js",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "lodash": "^4.17.15",
+    "yahoo-finance": "^0.3.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wdjopa/bourse.git"
+  },
+  "keywords": [
+    "nodejs",
+    "lodash"
+  ],
+  "author": "gp5-esigelec-2",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wdjopa/bourse/issues"
+  },
+  "homepage": "https://github.com/wdjopa/bourse#readme"
+}
